@@ -18,6 +18,29 @@ yaroslav.GainExperience(25);
 
 Console.WriteLine($"После лечения, Ярослав: {yaroslav.Health}");
 Console.WriteLine($"Опыт Ярослава: {yaroslav.Experience}");
+bool yaroslavAlive = yaroslav.IsAlive();
+Console.WriteLine($"Ярослав жив: {yaroslavAlive}");
+Console.WriteLine($"Артём жив: {artem.IsAlive()}");
+
+if (yaroslavAlive) {
+    Console.WriteLine("Ярослав может продолжать приключение.");
+}
+else {
+    Console.WriteLine("Ярослав больше не может сражаться.");
+}
+string info = yaroslav.GetInfo();
+Console.WriteLine("Строка получена. Сейчас выведем её:");
+Console.WriteLine(info);
+
+Console.WriteLine();
+Console.WriteLine(anastasia.GetInfo());
+Console.WriteLine();
+Console.WriteLine(artem.GetInfo());
+
+
+
+
+
 
 
 
@@ -50,3 +73,9 @@ Console.WriteLine($"Название: {film3.Name}");
 Console.WriteLine($"Жанр: {film3.Genre}");
 Console.WriteLine($"Год: {film3.Year}");
 Console.WriteLine($"Рейтинг: {film3.Rating}");
+
+Console.WriteLine($"рейтинг до вызова:{film1.Rating}");
+film1.addreiting(3);
+Console.WriteLine($"рейтинг с допутимым вызовом {film1.Rating}");
+film1.addreiting(-15);
+Console.WriteLine($"рейтинг с не допутимым вызовом {film1.Rating}");

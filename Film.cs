@@ -3,10 +3,16 @@ public class Films {
     public string Genre;
     public int Year;
     public double Rating;
-    public Films(string name ,double rating) {
+    public Films(string name, double rating) {
         Name = name;
         Genre = "horror";
         Year = 2018;
         Rating = rating;
+    }
+    public void addreiting(double r) {
+        if (r > 10 || r<0) {
+            return;
+        }
+        Rating = r;
     }
 }
