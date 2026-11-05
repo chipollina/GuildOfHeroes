@@ -156,7 +156,9 @@ return в TakeDamage — досрочный выход из void-метода б
 Причина: probeList.Add(new Hero(probeHero.Name, probeHero.Health)); — new Hero(...) создаёт второй объект, поэтому вывод был 80 и 100. 
 Исправление: probeList.Add(probeHero);
 (в списке ссылка на тот же объект, вывод 80 и 80)
+
 **Самостоятельный шаг:**
+
 Подсчёт «могут нести тяжёлые ящики (здоровье ≥ 120)»: `strongCount = 2` — Артём (120) и Александр (150).
 
 Самый здоровый: Александр (150) — одним `foreach` с обновлением `strongest`, если `hero.Health` > `strongest.Health`.
