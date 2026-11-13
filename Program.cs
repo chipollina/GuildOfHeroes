@@ -11,40 +11,33 @@ alexander.Heal(10);
 Guild guild = new Guild("Гильдия героев");
 guild.AddHero(yaroslav);
 guild.AddHero(anastasia);
-
 guild.AddHero(artem);
 guild.AddHero(alexander);
 guild.AddHero(sergey);
-List<Hero> members = guild.GetMembers();
-Console.WriteLine($">>> {guild.Name}: перекличка <<<");
-Console.WriteLine($"Участников: {guild.MemberCount}");
-if (members.Count > 0) {
-    Console.WriteLine($"Первый: {members[0].Name}");
-    Console.WriteLine($"Последний: {members[members.Count - 1].Name}");
-}
+
+Console.WriteLine($">>> {guild.Name}: участников {guild.MemberCount} <<<");
 Console.WriteLine();
-foreach (Hero hero in members) {
-    Console.WriteLine(hero.GetInfo());
-    Console.WriteLine();
-}
 
-Console.WriteLine($"Могут нести тяжёлые ящики (здоровье от 120): {guild.CountHealthy(120)}");
+QuestBoard board = new QuestBoard(guild);
+Quest floatQuest = new Quest(101, "Вернуть поплавок", 100, 30);
+Console.WriteLine($"Поручение добавлено: {board.AddQuest(floatQuest)}");
+Console.WriteLine($">>> №{floatQuest.Id}: {floatQuest.Title} <<<");
 
-Hero? strongest = guild.FindStrongest();
-if (strongest != null) {
-    Console.WriteLine($"Самый здоровый: {strongest.Name} ({strongest.Health})");
+Console.WriteLine($"Назначение Сергея: {board.TryAssign(101, " сЕрГеЙ ")}");
+Hero? assigned = floatQuest.AssignedHero;
+if (assigned != null) {
+    Console.WriteLine($"Исполнитель: {assigned.Name}");
 }
+Console.WriteLine($"Опыт после назначения: {sergey.Experience}");
+Console.WriteLine($"Завершение: {board.TryComplete(101)}");
+Console.WriteLine($"Опыт после завершения: {sergey.Experience}");
+Console.WriteLine($"Повторное завершение: {board.TryComplete(101)}");
+Console.WriteLine($"Опыт после повтора: {sergey.Experience}");
 
-Hero? found = guild.FindHeroByName(" аРтЁм ");
-if (found != null) {
-    Console.WriteLine($"Найден по запросу « аРтЁм »: {found.Name}");
-}
-else {
-    Console.WriteLine("По запросу « аРтЁм » никого нет.");
-}
-Console.WriteLine($"Повтор Александра принят: {guild.AddHero(alexander)}");
-Console.WriteLine($"Удалён отсутствующий: {guild.RemoveHero("Борис")}");
-Console.WriteLine($"Участников после проверок: {guild.MemberCount}");
+Console.WriteLine();
+Console.WriteLine(floatQuest.GetInfo());
+Console.WriteLine(sergey.GetInfo());
+
 
 
 
@@ -73,17 +66,10 @@ foreach (Films i in allFilms) {
     Console.WriteLine($"Рейтинг: {i.Rating}");
 }
 Console.WriteLine();
-Console.WriteLine($"Повтор The Nun: {catalog.AddFilm(new Films("the nun", 7.0))}");
-
-Films? foundFilm = catalog.FindFilm("  HALLOWEEN  ");
-if (foundFilm != null) {
-    Console.WriteLine($"Найден: {foundFilm.Name}");
-} else {
-    Console.WriteLine("Не найден.");
-}
-Films? missingFilm = catalog.FindFilm("Неизвестный");
-Console.WriteLine($"Неизвестный не найден: {missingFilm == null}");
-
-Console.WriteLine($"Удалён reincarnation: {catalog.RemoveFilm("REINCARNATION")}");
-Console.WriteLine($"Осталось фильмов: {catalog.FilmCount}");
-Console.WriteLine($"Хороших фильмов (7.0+): {catalog.CountGood()}");
+Loan loan = new Loan(1, 5.0);
+Console.WriteLine($"Старт: {loan.TryStart(film1)}");
+Console.WriteLine($"Повторный старт: {loan.TryStart(film1)}");
+Console.WriteLine($"Возврат: {loan.TryFinish()}");
+Console.WriteLine($"Рейтинг после возврата: {film1.Rating}");
+Console.WriteLine($"Повторный возварт: {loan.TryFinish()}");
+Console.WriteLine($"Рейтинг после повторного возврата: {film1.Rating}");
