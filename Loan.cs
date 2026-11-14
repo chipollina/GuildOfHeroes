@@ -2,17 +2,17 @@ public class Loan {
     public int Id { get; private set; }
     public double MinRating { get; private set; }
     public Films? AssignedFilm { get; private set; }
-    public bool IsFinished { get; private set; }
+    public LoanStatus Status { get; private set; }
 
     public Loan(int id, double minRating) {
         Id = id;
         MinRating = minRating;
         AssignedFilm = null;
-        IsFinished = false;
+        Status = LoanStatus.Open;
     }
 
     public bool TryStart(Films film) {
-        if (IsFinished) {
+        if (Status != LoanStatus.Open) {
             return false;
         }
         if (AssignedFilm != null) {
@@ -23,11 +23,12 @@ public class Loan {
         }
 
         AssignedFilm = film;
-        return true;
+        Status = LoanStatus.Active;
+    return true;
     }
 
     public bool TryFinish() {
-        if (IsFinished) {
+        if (Status != LoanStatus.Active) {
             return false;
         }
 
@@ -37,7 +38,16 @@ public class Loan {
         }
 
         film.addreiting(film.Rating + 0.5);
-        IsFinished = true;
+        Status = LoanStatus.Returned;
+        return true;
+    }
+
+    public bool TryCancel() {
+        if (Status != LoanStatus.Open && Status != LoanStatus.Active) {
+            return false;
+        }
+
+        Status = LoanStatus.Cancelled;
         return true;
     }
 }

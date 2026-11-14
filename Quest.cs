@@ -4,7 +4,7 @@ public class Quest {
     public int MinHealth { get; private set; }
     public int Reward { get; private set; }
     public Hero? AssignedHero { get; private set; }
-    public bool IsCompleted { get; private set; }
+    public QuestStatus Status { get; private set; }
 
     public Quest(int id, string title, int minHealth, int reward) {
         Id = id;
@@ -27,56 +27,74 @@ public class Quest {
         }
 
         AssignedHero = null;
-        IsCompleted = false;
+        Status = QuestStatus.Open;
     }
     public bool TryAssign(Hero hero) {
-        if (IsCompleted) {
-            return false;
-        }
-        if (AssignedHero != null) {
-            return false;
-        }
-        if (hero.Health < MinHealth) {
-            return false;
-        }
-        if (!hero.IsAlive()) {
-            return false;
-        }
-        AssignedHero = hero;
-        return true;
+    if (Status != QuestStatus.Open) {
+        return false;
+    }
+    if (!hero.IsAlive()) {
+        return false;
+    }
+    if (hero.Health < MinHealth) {
+        return false;
+    }
+
+    AssignedHero = hero;
+    Status = QuestStatus.Assigned;
+    return true;
     }
     public bool TryComplete() {
-        if (IsCompleted) {
-            return false;
-        }
+    if (Status != QuestStatus.Assigned) {
+        return false;
+    }
 
-        Hero? hero = AssignedHero;
-        if (hero == null) {
-            return false;
-        }
-        if (!hero.IsAlive()) {
-            return false;
-        }
-        if (hero.Health < MinHealth) {
-            return false;
-        }
-        if (!hero.CanGainExperience(Reward)) {
-            return false;
-        }
+    Hero? hero = AssignedHero;
+    if (hero == null) {
+        return false;
+    }
+    if (!hero.IsAlive()) {
+        return false;
+    }
+    if (hero.Health < MinHealth) {
+        return false;
+    }
+    if (!hero.CanGainExperience(Reward)) {
+        return false;
+    }
 
-        hero.GainExperience(Reward);
-        IsCompleted = true;
-        return true;
+    hero.GainExperience(Reward);
+    Status = QuestStatus.Completed;
+    return true;
     }
     public string GetInfo() {
-        string heroText = "не назначен";
-        if (AssignedHero != null) {
-            heroText = AssignedHero.Name;
+    string heroText = "не назначен";
+    if (AssignedHero != null) {
+        heroText = AssignedHero.Name;
+    }
+
+    return $"№{Id} «{Title}»: {GetStatusText()}, исполнитель {heroText}";
+}   
+    public bool TryCancel() {
+        if (Status != QuestStatus.Open && Status != QuestStatus.Assigned) {
+            return false;
         }
-        string doneText = "нет";
-        if (IsCompleted) {
-            doneText = "да";
-        }
-        return $"№{Id} «{Title}»: исполнитель {heroText}, выполнено: {doneText}";
+
+        Status = QuestStatus.Cancelled;
+        return true;
     } 
+    public string GetStatusText() {
+    switch (Status) {
+        case QuestStatus.Open:
+            return "открыто";
+        case QuestStatus.Assigned:
+            return "назначено";
+        case QuestStatus.Completed:
+            return "выполнено";
+        case QuestStatus.Cancelled:
+            return "отменено";
+        default:
+            return "неизвестно";
+        }
+    }   
 }

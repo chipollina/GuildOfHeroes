@@ -1,5 +1,6 @@
 public class Catalog {
     private List<Films> _films = new List<Films>();
+    private readonly List<Loan> _loans = new List<Loan>();
 
     public string Name { get; private set; }
 
@@ -60,5 +61,47 @@ public class Catalog {
             }
         }
         return count;
+    }
+    public bool AddLoan(Loan loan) {
+        if (FindLoan(loan.Id) != null) {
+            return false;
+        }
+        _loans.Add(loan);
+        return true;
+    }
+
+    public Loan? FindLoan(int loanId) {
+        foreach (Loan loan in _loans) {
+            if (loan.Id == loanId) {
+                return loan;
+            }
+        }
+        return null;
+    }
+
+    public bool IsFilmOnLoan(Films film) {
+        foreach (Loan loan in _loans) {
+            if (loan.Status == LoanStatus.Active && loan.AssignedFilm == film) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool TryStartLoan(int loanId, Films film) {
+        Loan? loan = FindLoan(loanId);
+        if (loan == null) {
+            return false;
+        }
+
+        if (IsFilmOnLoan(film)) {
+            return false;
+        }
+
+        return loan.TryStart(film);
+    }
+
+    public List<Loan> GetLoans() {
+        return new List<Loan>(_loans);
     }
 }
